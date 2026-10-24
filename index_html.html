@@ -24,6 +24,7 @@ html,body{margin:0;background:var(--desk);color:var(--ink);font:13px/1.7 var(--f
 .topbar b{font:600 13px var(--f-en);letter-spacing:.32em}
 .topbar span{color:#93a9b9;font-size:12px}
 .topbar .sp{flex:1}
+@media screen and (max-width:700px){.topbar{gap:8px;padding:8px 12px}.topbar b{font-size:11px;letter-spacing:.2em}.topbar span:not(.sp){display:none}.topbar .btn{white-space:nowrap;padding:7px 10px;font-size:12px}}
 .btn{cursor:pointer;border:0;border-radius:3px;padding:8px 14px;font:700 12.5px var(--f-body)}
 .btn.light{background:#fff;color:var(--char)} .btn.aqua{background:var(--brand);color:#fff} .btn.line{background:transparent;color:#fff;border:1px solid #4d6578}
 .btn:disabled{opacity:.6;cursor:wait}
@@ -51,6 +52,42 @@ details.sc summary{cursor:pointer;font-weight:700;font-size:12.5px;display:flex;
 details.sc label{display:flex;gap:6px;align-items:flex-start;color:var(--ink);font-size:12px;margin:2px 0}
 details.sc input{width:auto;margin-top:3px}
 .note{font-size:10.5px;color:var(--muted);line-height:1.6}
+.stp{display:block}.stp button{display:none}
+details.acc>summary{list-style:none}details.acc>summary::-webkit-details-marker{display:none}
+@media screen and (max-width:1200px){.wrap.closed{grid-template-columns:1fr}}
+@media screen and (max-width:700px){
+.wrap{padding:12px 10px;gap:14px}
+.drawer{position:static;max-height:none;overflow:visible;padding:4px 14px 14px}
+.drawer label{font-size:13px;margin:12px 0 4px}
+.drawer input,.drawer select{font-size:16px;min-height:44px;padding:8px 10px}
+.drawer input[type=checkbox]{min-height:0;width:22px!important;height:22px}
+.drawer input[type=file]{font-size:14px!important;min-height:0}
+#go{min-height:52px;font-size:16px;border-radius:6px}
+details.acc{border-bottom:1px solid var(--line)}
+details.acc>summary{display:flex;align-items:center;gap:10px;min-height:54px;font:700 15px var(--f-head);color:var(--char);cursor:pointer}
+details.acc>summary::before{content:"";width:4px;height:16px;background:var(--brand)}
+details.acc>summary::after{content:"";margin-left:auto;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
+details.acc[open]>summary::after{transform:rotate(-135deg)}
+details.acc>.accb{padding:0 0 16px}
+.eq thead{display:none}
+.eq,.eq tbody{display:block}
+.eq tr{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 8px;padding:12px 0;border-bottom:1px solid var(--hair)}
+.eq td{display:block;border:0;padding:0}
+.eq td.nm{grid-column:1/-1;font-size:14px;font-weight:700}
+.eq td.nm span{font-size:12px;font-weight:400;margin-left:6px}
+.eq td[data-l]::before{content:attr(data-l);display:block;font-size:11px;color:var(--muted);margin-bottom:2px}
+.eq td.cnt{grid-column:1/-1}
+.eq input{font-size:16px;min-height:42px;padding:6px 8px}
+#ot tr{grid-template-columns:1fr 1fr}
+#ot td{width:auto!important}
+#ot td.nm{font-size:14px!important}
+.eq .auto{text-align:left;font-size:16px;padding:8px 0}
+.stp{display:grid;grid-template-columns:48px 1fr 48px;gap:6px;max-width:220px}
+.stp button{display:block;border:1px solid var(--line);background:var(--tint);border-radius:4px;font:700 22px/1 var(--f-num);color:var(--char);min-height:44px}
+.stp input{text-align:center!important}
+.drawer .g2[style*="repeat(5"]{grid-template-columns:repeat(3,1fr)!important}
+.drawer .g3{grid-template-columns:1fr 1fr}
+}
 /* ---------- ページ ---------- */
 .report{display:flex;flex-direction:column;gap:24px;align-items:center;min-width:0}
 .page{width:min(100%,820px);min-height:1160px;background:var(--paper);box-shadow:0 6px 28px rgba(13,34,51,.14);position:relative;padding:30px 46px 58px;display:flex;flex-direction:column;overflow:hidden}
@@ -494,14 +531,14 @@ function pmt(P,ir,n){return n<=0?0:ir>0?P*ir/(1-Math.pow(1+ir,-n)):P/n}
 /* ---------- 入力欄 ---------- */
 function buildEquip(){
   $('eq').querySelector('tbody').innerHTML=EQUIP.map(e=>`<tr><td class="nm">${e.model}${e.cap?' '+e.cap:''}<br><span>${e.kind}</span></td>
-   <td><input id="n_${e.id}" type="number" min="0" value="${e.n}" aria-label="${e.model} 台数"></td>
-   <td><input id="l_${e.id}" type="number" value="${e.list}" aria-label="${e.model} 定価"></td>
-   <td><input id="r_${e.id}" type="number" step="0.05" value="${e.rate}" aria-label="${e.model} 掛率"></td>
-   <td><input id="p_${e.id}" type="number" step="100" value="${e.price}" aria-label="${e.model} 料金"></td>
-   <td><input id="t_${e.id}" type="number" step="0.5" value="${e.turn}" aria-label="${e.model} 回転数"></td></tr>`).join('');
+   <td class="cnt" data-l="台数"><div class="stp"><button type="button" class="sb" data-d="-1" aria-label="減らす">−</button><input id="n_${e.id}" type="number" min="0" value="${e.n}" aria-label="${e.model} 台数"><button type="button" class="sb" data-d="1" aria-label="増やす">＋</button></div></td>
+   <td data-l="定価"><input id="l_${e.id}" type="number" value="${e.list}" aria-label="${e.model} 定価"></td>
+   <td data-l="掛率"><input id="r_${e.id}" type="number" step="0.05" value="${e.rate}" aria-label="${e.model} 掛率"></td>
+   <td data-l="料金"><input id="p_${e.id}" type="number" step="100" value="${e.price}" aria-label="${e.model} 料金"></td>
+   <td data-l="回/日"><input id="t_${e.id}" type="number" step="0.5" value="${e.turn}" aria-label="${e.model} 回転数"></td></tr>`).join('');
   $('ot').querySelector('tbody').innerHTML=OTHER.map(o=>`<tr><td class="nm" style="font-size:11px">${o.t}</td>
-   <td style="width:56px">${o.auto?`<span class="auto" id="q_${o.id}"></span>`:`<input id="q_${o.id}" type="number" min="0" value="${o.q}" aria-label="${o.t} 数量">`}</td>
-   <td style="width:72px"><input id="u_${o.id}" type="number" value="${o.u}" aria-label="${o.t} 単価"></td></tr>`).join('');
+   <td style="width:56px" data-l="数量">${o.auto?`<span class="auto" id="q_${o.id}"></span>`:`<div class="stp"><button type="button" class="sb" data-d="-1" aria-label="減らす">−</button><input id="q_${o.id}" type="number" min="0" value="${o.q}" aria-label="${o.t} 数量"><button type="button" class="sb" data-d="1" aria-label="増やす">＋</button></div>`}</td>
+   <td style="width:72px" data-l="単価（千円）"><input id="u_${o.id}" type="number" value="${o.u}" aria-label="${o.t} 単価"></td></tr>`).join('');
   updateAuto();
 }
 function equip(){return EQUIP.map(e=>{const list=num('l_'+e.id)*1000,rate=num('r_'+e.id);return {...e,n:num('n_'+e.id),list,rate,unit:Math.round(list*rate),price:num('p_'+e.id),turn:num('t_'+e.id)}})}
@@ -707,6 +744,7 @@ async function run(){
     LAST={lat,lon,matched,mesh,road,osm:osm.err?null:osm,osmErr:osm.err||'',gcomp:Array.isArray(gc)?gc:null,gErr:gc?.err||''};
     if(LAST.gcomp||!LAST.osmErr){buildCmp();applyCompScore()}
     render();
+    if(PHONE.matches){const w=$('wrap');w.classList.add('closed');$('toggle').textContent='入力欄を開く';setTimeout(()=>{$('report').scrollIntoView({behavior:'smooth'});if(map?.invalidateSize)map.invalidateSize()},80)}
     status(`完了：${matched}${LAST.osmErr?'\n※周辺施設：'+LAST.osmErr:''}${LAST.gErr?'\n※Googleマップ：'+LAST.gErr:''}`);
   }catch(e){status('エラー：'+e.message)}finally{btn.disabled=false}
 }
@@ -763,7 +801,7 @@ function toName(){const v=$('client').value.trim().replace(/[\s　]*(様|御中|
 function setCover(){const v=$('cvstyle').value;try{localStorage.setItem('lp_cv',v)}catch(e){}drawCover()}
 function drawCover(){
   const v=$('cvstyle').value,sec=$('p-cover');sec.className='page cover cv'+v;
-  const nm=esc($('name').value),ad=LAST?esc(LAST.matched):'左の入力欄に住所を入れて「調べてレポートを作る」を押してください';
+  const nm=esc($('name').value),ad=LAST?esc(LAST.matched):'入力欄に住所を入れて「調べてレポートを作る」を押してください';
   const cl=$('client').value.trim().replace(/[\s　]*(様|御中|殿)$/,''),hon=$('hon').value;
   const to=`<div class="to-line">${cl?`<span class="nm">${esc(cl)}</span>`:'<span class="blank"></span>'}<span class="hn">${hon}</span></div>`;
   const dt=new Date().toLocaleDateString('ja-JP');
@@ -1185,6 +1223,20 @@ setBand();
 try{const v=localStorage.getItem('lp_cv');if(v&&/^[123]$/.test(v))$('cvstyle').value=v}catch(e){}
 drawCover();
 $('gkey').addEventListener('change',()=>{try{localStorage.setItem('lp_gkey',$('gkey').value.trim())}catch(e){}});
+const PHONE=matchMedia('(max-width:700px)');
+function phoneDrawer(){
+  const d=document.querySelector('.drawer');
+  [...d.querySelectorAll(':scope>h3')].forEach((h,i)=>{
+    const det=document.createElement('details');det.className='acc';if(i===0)det.open=true;
+    const sm=document.createElement('summary');sm.textContent=h.textContent;const body=document.createElement('div');body.className='accb';
+    det.append(sm,body);let n=h.nextElementSibling;while(n&&n.tagName!=='H3'){const nx=n.nextElementSibling;body.appendChild(n);n=nx}
+    h.replaceWith(det);
+  });
+  if(!$('appid').value.trim()){const s=[...d.querySelectorAll('details.acc')].pop();if(s)s.open=true}
+}
+document.querySelector('.drawer').addEventListener('click',e=>{const b=e.target.closest('.sb');if(!b)return;const i=b.parentNode.querySelector('input');i.value=Math.max(0,(+i.value||0)+(+b.dataset.d));i.dispatchEvent(new Event('change',{bubbles:true}))});
+document.querySelectorAll('.drawer input[type=number]').forEach(i=>i.setAttribute('inputmode',i.step&&i.step!=='1'?'decimal':'numeric'));
+if(PHONE.matches)phoneDrawer();
 $('go').addEventListener('click',run);
 $('print').addEventListener('click',()=>window.print());
 $('toggle').addEventListener('click',()=>{const w=$('wrap');w.classList.toggle('closed');$('toggle').textContent=w.classList.contains('closed')?'入力欄を開く':'入力欄を閉じる';setTimeout(()=>{if(map?.invalidateSize)map.invalidateSize()},50)});
